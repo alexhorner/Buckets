@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
-using System.Net;
 using System.Threading.Tasks;
 using Buckets.Common;
 using Buckets.Web.Attributes;
@@ -68,7 +67,7 @@ namespace Buckets.Web.Controllers
                 
             Response.Headers.Add(new KeyValuePair<string, StringValues>("X-Buckets-Bucket-Name", metadata.Bucket));
             Response.Headers.Add(new KeyValuePair<string, StringValues>("X-Buckets-Object-Name", metadata.Name));
-            Response.Headers.Add(new KeyValuePair<string, StringValues>("X-Buckets-Object-Id", metadata.Id));
+            Response.Headers.Add(new KeyValuePair<string, StringValues>("X-Buckets-Object-ID", metadata.Id));
             Response.Headers.Add(new KeyValuePair<string, StringValues>("Content-Type", metadata.MimeType));
             Response.Headers.Add(new KeyValuePair<string, StringValues>("Content-Length", objectSize.ToString()));
             
@@ -116,7 +115,7 @@ namespace Buckets.Web.Controllers
                 
             Response.Headers.Add(new KeyValuePair<string, StringValues>("X-Buckets-Bucket-Name", metadataAndData.Bucket));
             Response.Headers.Add(new KeyValuePair<string, StringValues>("X-Buckets-Object-Name", metadataAndData.Name));
-            Response.Headers.Add(new KeyValuePair<string, StringValues>("X-Buckets-Object-Id", metadataAndData.Id));
+            Response.Headers.Add(new KeyValuePair<string, StringValues>("X-Buckets-Object-ID", metadataAndData.Id));
             
             return new FileContentResult(metadataAndData.Data, metadataAndData.MimeType);
         }

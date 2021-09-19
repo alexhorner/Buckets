@@ -41,4 +41,3 @@ Make sure to adjust the configuration before deployment!
 
 ## TODO
 - Caching maybe?
-- Better checks around bad user input!
