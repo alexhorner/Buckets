@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
+using System.Net;
 using System.Threading.Tasks;
 using Buckets.Common;
 using Buckets.Web.Attributes;
@@ -32,6 +33,9 @@ namespace Buckets.Web.Controllers
         /// <remarks>Checks the ObjectRead authentication requirement</remarks>
         [HttpHead("{bucket}/{id}")]
         [AuthenticationCheck("ObjectRead")]
+        [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(BasicResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         public IActionResult Head([FromRoute] string bucket, [FromRoute] string id)
         {
             BucketObjectMetadata? metadata;
@@ -55,7 +59,12 @@ namespace Buckets.Web.Controllers
                 return StatusCode(500);
             }
 
-            if (metadata == null) return NotFound();
+            if (metadata == null) return NotFound(new ProblemDetails
+            {
+                Status = StatusCodes.Status404NotFound,
+                Title = "The specified object could not be found",
+                Instance = HttpContext.Request.Path
+            });
                 
             Response.Headers.Add(new KeyValuePair<string, StringValues>("X-Buckets-Bucket-Name", metadata.Bucket));
             Response.Headers.Add(new KeyValuePair<string, StringValues>("X-Buckets-Object-Name", metadata.Name));
@@ -74,6 +83,9 @@ namespace Buckets.Web.Controllers
         /// <remarks>Checks the ObjectRead authentication requirement</remarks>
         [HttpGet("{bucket}/{id}")]
         [AuthenticationCheck("ObjectRead")]
+        [ProducesResponseType(typeof(FileContentResult), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BasicResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         public IActionResult Get([FromRoute] string bucket, [FromRoute] string id)
         {
             BucketObject? metadataAndData;
@@ -95,7 +107,12 @@ namespace Buckets.Web.Controllers
                 return StatusCode(500);
             }
 
-            if (metadataAndData == null) return NotFound();
+            if (metadataAndData == null) return NotFound(new ProblemDetails
+            {
+                Status = StatusCodes.Status404NotFound,
+                Title = "The specified object could not be found",
+                Instance = HttpContext.Request.Path
+            });
                 
             Response.Headers.Add(new KeyValuePair<string, StringValues>("X-Buckets-Bucket-Name", metadataAndData.Bucket));
             Response.Headers.Add(new KeyValuePair<string, StringValues>("X-Buckets-Object-Name", metadataAndData.Name));
@@ -114,6 +131,8 @@ namespace Buckets.Web.Controllers
         /// <remarks>Checks the ObjectCreate authentication requirement</remarks>
         [HttpPut("{bucket}")]
         [AuthenticationCheck("ObjectCreate")]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BasicResponse), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Put([FromRoute] string bucket, [Required] IFormFile file, [FromQuery] string? nameOverride, [FromQuery] string? mimeOverride)
         {
             Stream fileStream = file.OpenReadStream();
@@ -162,6 +181,9 @@ namespace Buckets.Web.Controllers
         /// <remarks>Checks the ObjectDelete authentication requirement</remarks>
         [HttpDelete("{bucket}/{id}")]
         [AuthenticationCheck("ObjectDelete")]
+        [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BasicResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         public IActionResult Delete([FromRoute] string bucket, [FromRoute] string id)
         {
             try
@@ -178,7 +200,12 @@ namespace Buckets.Web.Controllers
             }
             catch (FileNotFoundException)
             {
-                return NotFound();
+                return NotFound(new ProblemDetails
+                {
+                    Status = StatusCodes.Status404NotFound,
+                    Title = "The specified object could not be found",
+                    Instance = HttpContext.Request.Path
+                });
             }
             catch (Exception)
             {
@@ -194,6 +221,7 @@ namespace Buckets.Web.Controllers
         /// <remarks>Checks the BucketList authentication requirement</remarks>
         [HttpGet("[action]")]
         [AuthenticationCheck("BucketList")]
+        [ProducesResponseType(typeof(string[]), StatusCodes.Status200OK)]
         public IActionResult List()
         {
             try
@@ -213,6 +241,9 @@ namespace Buckets.Web.Controllers
         /// <remarks>Checks the ObjectList authentication requirement</remarks>
         [HttpGet("{bucket}/[action]")]
         [AuthenticationCheck("ObjectList")]
+        [ProducesResponseType(typeof(string[]), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BasicResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         public IActionResult List([FromRoute] string bucket)
         {
             try
@@ -229,7 +260,12 @@ namespace Buckets.Web.Controllers
             }
             catch (FileNotFoundException)
             {
-                return NotFound();
+                return NotFound(new ProblemDetails
+                {
+                    Status = StatusCodes.Status404NotFound,
+                    Title = "The specified object could not be found",
+                    Instance = HttpContext.Request.Path
+                });
             }
             catch (Exception)
             {
