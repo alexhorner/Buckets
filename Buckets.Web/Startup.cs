@@ -65,7 +65,7 @@ namespace Buckets.Web
                         Version = "v1"
                     });
                 
-                    c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.XML"));
+                    c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"));
                 });
             }
 
@@ -74,6 +74,8 @@ namespace Buckets.Web
         
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseKestrel();
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -89,7 +91,7 @@ namespace Buckets.Web
             }
 
             if (Configuration.GetValue<bool>("UseHttpsRedirection")) app.UseHttpsRedirection();
-
+            
             app.UseRouting();
 
             app.UseAuthorization();
