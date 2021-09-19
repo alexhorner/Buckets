@@ -1,4 +1,4 @@
-﻿namespace Buckets.Web.Bucketing
+﻿namespace Buckets.Common
 {
     public class BucketObjectMetadata
     {

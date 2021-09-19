@@ -6,12 +6,12 @@ using Microsoft.Extensions.Configuration;
 namespace Buckets.Web.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
-    public class AuthenticationRequirementsController
+    [Route("[controller]/[action]")]
+    public class SystemController : ControllerBase
     {
         private readonly IConfiguration _configuration;
 
-        public AuthenticationRequirementsController(IConfiguration configuration)
+        public SystemController(IConfiguration configuration)
         {
             _configuration = configuration;
         }
@@ -20,7 +20,7 @@ namespace Buckets.Web.Controllers
         /// Get a list of authentication requirements for authenticating operations
         /// </summary>
         [HttpGet]
-        public Dictionary<string, bool> Get()
+        public Dictionary<string, bool> AuthenticationRequirements()
         {
             return _configuration.GetSection("AuthenticationRequirements").GetChildren().ToDictionary(x => x.Key, x => bool.Parse(x.Value));
         }

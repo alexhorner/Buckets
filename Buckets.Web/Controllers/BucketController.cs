@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Threading.Tasks;
+using Buckets.Common;
 using Buckets.Web.Attributes;
 using Buckets.Web.Bucketing;
+using Buckets.Web.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
@@ -33,12 +35,20 @@ namespace Buckets.Web.Controllers
         public IActionResult Head([FromRoute] string bucket, [FromRoute] string id)
         {
             BucketObjectMetadata? metadata;
-            long objectSize = 0;
+            long objectSize;
 
             try
             {
                 metadata = _bucketStore.GetObjectMetadata(bucket, id, out long objectSizeInternal);
                 objectSize = objectSizeInternal;
+            }
+            catch (ArgumentOutOfRangeException argumentOutOfRangeException)
+            {
+                return BadRequest(new BasicResponse
+                {
+                    Message = argumentOutOfRangeException.Message,
+                    Error = true
+                });
             }
             catch (Exception)
             {
@@ -72,6 +82,14 @@ namespace Buckets.Web.Controllers
             {
                 metadataAndData = _bucketStore.GetObject(bucket, id, out long _);
             }
+            catch (ArgumentOutOfRangeException argumentOutOfRangeException)
+            {
+                return BadRequest(new BasicResponse
+                {
+                    Message = argumentOutOfRangeException.Message,
+                    Error = true
+                });
+            }
             catch (Exception)
             {
                 return StatusCode(500);
@@ -103,17 +121,36 @@ namespace Buckets.Web.Controllers
 
             await fileStream.CopyToAsync(fileMemoryStream);
             await fileStream.DisposeAsync();
-            
-            string objectId = _bucketStore.CreateObject(new BucketObject
+
+            string objectId;
+
+            try
             {
-                MimeType = string.IsNullOrWhiteSpace(mimeOverride) ? file.ContentType : mimeOverride,
-                Name = string.IsNullOrWhiteSpace(nameOverride) ? file.Name : nameOverride,
-                Bucket = bucket,
-                Data = fileMemoryStream.ToArray()
-            });
-            
-            await fileMemoryStream.DisposeAsync();
-            
+                objectId = _bucketStore.CreateObject(new BucketObject
+                {
+                    MimeType = string.IsNullOrWhiteSpace(mimeOverride) ? file.ContentType : mimeOverride,
+                    Name = string.IsNullOrWhiteSpace(nameOverride) ? file.Name : nameOverride,
+                    Bucket = bucket,
+                    Data = fileMemoryStream.ToArray()
+                });
+            }
+            catch (ArgumentOutOfRangeException argumentOutOfRangeException)
+            {
+                return BadRequest(new BasicResponse
+                {
+                    Message = argumentOutOfRangeException.Message,
+                    Error = true
+                });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
+            finally
+            {
+                await fileMemoryStream.DisposeAsync();   
+            }
+
             return new JsonResult(objectId);
         }
         
@@ -131,9 +168,21 @@ namespace Buckets.Web.Controllers
             {
                 _bucketStore.DeleteObject(bucket, id);
             }
+            catch (ArgumentOutOfRangeException argumentOutOfRangeException)
+            {
+                return BadRequest(new BasicResponse
+                {
+                    Message = argumentOutOfRangeException.Message,
+                    Error = true
+                });
+            }
             catch (FileNotFoundException)
             {
                 return NotFound();
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
             }
 
             return Ok();
@@ -145,9 +194,16 @@ namespace Buckets.Web.Controllers
         /// <remarks>Checks the BucketList authentication requirement</remarks>
         [HttpGet("[action]")]
         [AuthenticationCheck("BucketList")]
-        public string[] List()
+        public IActionResult List()
         {
-            return _bucketStore.ListBuckets();
+            try
+            {
+                return new JsonResult(_bucketStore.ListBuckets());
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
         }
         
         /// <summary>
@@ -163,9 +219,21 @@ namespace Buckets.Web.Controllers
             {
                 return new JsonResult(_bucketStore.ListBucketObjects(bucket));
             }
+            catch (ArgumentOutOfRangeException argumentOutOfRangeException)
+            {
+                return BadRequest(new BasicResponse
+                {
+                    Message = argumentOutOfRangeException.Message,
+                    Error = true
+                });
+            }
             catch (FileNotFoundException)
             {
                 return NotFound();
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
             }
         }
     }
