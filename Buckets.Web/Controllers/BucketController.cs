@@ -146,8 +146,8 @@ namespace Buckets.Web.Controllers
             {
                 objectId = _bucketStore.CreateObject(new BucketObject
                 {
-                    MimeType = string.IsNullOrWhiteSpace(mimeOverride) ? file.ContentType : mimeOverride,
-                    Name = string.IsNullOrWhiteSpace(nameOverride) ? file.Name : nameOverride,
+                    MimeType = string.IsNullOrWhiteSpace(mimeOverride) ? (string.IsNullOrWhiteSpace(file.ContentType) ? "application/octet-stream" : file.ContentType) : mimeOverride,
+                    Name = string.IsNullOrWhiteSpace(nameOverride) ? (string.IsNullOrWhiteSpace(file.Name) ? Guid.NewGuid().ToString() : file.Name) : nameOverride,
                     Bucket = bucket,
                     Data = fileMemoryStream.ToArray()
                 });
