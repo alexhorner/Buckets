@@ -41,6 +41,7 @@ namespace Buckets.Web.Bucketing
             return new BucketObject
             {
                 Id = metadata.Id,
+                Bucket = metadata.Bucket,
                 MimeType = metadata.MimeType,
                 Name = metadata.Name,
                 Data = File.ReadAllBytes(Path.Combine(_bucketStoragePath, bucket, id + ".bktobj"))
