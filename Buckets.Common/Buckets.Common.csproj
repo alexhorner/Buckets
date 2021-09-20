@@ -4,6 +4,19 @@
         <TargetFramework>netstandard2.1</TargetFramework>
         <LangVersion>default</LangVersion>
         <Nullable>enable</Nullable>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Title>Buckets Common</Title>
+        <Authors>ahorner</Authors>
+        <Description>The C# common resource package for the Buckets Server and Client - A frighteningly simple bucketing API without a database backend
+
+This package is usually implicitly installed with other Buckets packages and you most likely do not need to explicitly install it for this reason.</Description>
+        <Copyright>Copyright (c) 2021 Alexander Horner</Copyright>
+        <PackageProjectUrl>https://github.com/alexhorner/Buckets</PackageProjectUrl>
+        <PackageLicenseUrl>https://raw.githubusercontent.com/alexhorner/Buckets/master/LICENSE</PackageLicenseUrl>
+        <RepositoryUrl>https://github.com/alexhorner/Buckets</RepositoryUrl>
+        <RepositoryType>GIT</RepositoryType>
+        <PackageTags>http storage api-client bucket api-wrapper api-rest object-storage object storage</PackageTags>
+        <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     </PropertyGroup>
 
 </Project>
