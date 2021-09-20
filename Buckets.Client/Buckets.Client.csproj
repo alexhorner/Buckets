@@ -4,6 +4,28 @@
         <TargetFramework>netstandard2.1</TargetFramework>
         <LangVersion>default</LangVersion>
         <Nullable>enable</Nullable>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Title>Buckets Client</Title>
+        <Authors>ahorner</Authors>
+        <Description>The C# client library for the Buckets Server - A frighteningly simple bucketing API without a database backend</Description>
+        <Copyright>Copyright (c) 2021 Alexander Horner</Copyright>
+        <PackageProjectUrl>https://github.com/alexhorner/Buckets</PackageProjectUrl>
+        <PackageLicenseUrl>https://github.com/alexhorner/Buckets/blob/master/LICENSE</PackageLicenseUrl>
+        <RepositoryUrl>https://github.com/alexhorner/Buckets</RepositoryUrl>
+        <RepositoryType>GIT</RepositoryType>
+        <PackageTags>http storage api-client bucket api-wrapper api-rest object-storage object storage</PackageTags>
+        <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+        <AssemblyVersion>1.0.0</AssemblyVersion>
+        <FileVersion>1.0.0</FileVersion>
+        <NeutralLanguage>en</NeutralLanguage>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <DocumentationFile>bin\Debug\Buckets.Client.xml</DocumentationFile>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+      <DocumentationFile>bin\Release\Buckets.Client.xml</DocumentationFile>
     </PropertyGroup>
 
     <ItemGroup>
