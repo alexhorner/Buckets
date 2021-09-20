@@ -74,8 +74,6 @@ namespace Buckets.Web
         
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseKestrel();
-            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
