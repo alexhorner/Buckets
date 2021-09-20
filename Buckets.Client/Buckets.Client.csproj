@@ -10,7 +10,7 @@
         <Description>The C# client library for the Buckets Server - A frighteningly simple bucketing API without a database backend</Description>
         <Copyright>Copyright (c) 2021 Alexander Horner</Copyright>
         <PackageProjectUrl>https://github.com/alexhorner/Buckets</PackageProjectUrl>
-        <PackageLicenseUrl>https://github.com/alexhorner/Buckets/blob/master/LICENSE</PackageLicenseUrl>
+        <PackageLicenseUrl>https://raw.githubusercontent.com/alexhorner/Buckets/master/LICENSE</PackageLicenseUrl>
         <RepositoryUrl>https://github.com/alexhorner/Buckets</RepositoryUrl>
         <RepositoryType>GIT</RepositoryType>
         <PackageTags>http storage api-client bucket api-wrapper api-rest object-storage object storage</PackageTags>
